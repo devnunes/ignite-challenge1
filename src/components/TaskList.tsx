@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import '../styles/tasklist.scss'
+import '../styles/tasklist.scss';
 
-import { FiTrash, FiCheckSquare } from 'react-icons/fi'
+import { FiTrash, FiCheckSquare } from 'react-icons/fi';
 
 interface Task {
   id: number;
@@ -15,15 +15,37 @@ export function TaskList() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
-    // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    const duplicity = tasks.find(task => task.title === newTaskTitle);
+    if(!duplicity && !!newTaskTitle) {
+      const min = 1;
+      const max = 100;
+      const rand = min + Math.random() * (max - min);
+      const newTask = {id: rand, title: newTaskTitle, isComplete: false};
+      setTasks([...tasks, newTask])
+    }
   }
 
   function handleToggleTaskCompletion(id: number) {
-    // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    const taskExists = tasks.find(task => task.id === id);
+    if(!!taskExists){
+      const tasksModified = Object.assign(taskExists,  { isComplete: !taskExists.isComplete });
+      const newTasks = tasks.map(task => {
+        if(task.id === id){
+          return Object.assign(task, tasksModified)
+        }
+        return task;
+      })
+      console.log(newTasks);
+      setTasks(newTasks);
+    }
   }
 
   function handleRemoveTask(id: number) {
-    // Remova uma task da listagem pelo ID
+    const taskExists = tasks.find(task => task.id === id);
+    if(!!taskExists) {
+      const newTasks = tasks.filter(task => task.id !== id);
+      setTasks(newTasks);
+    }
   }
 
   return (
