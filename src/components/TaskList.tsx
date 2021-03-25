@@ -17,27 +17,18 @@ export function TaskList() {
   function handleCreateNewTask() {
     const duplicity = tasks.find(task => task.title === newTaskTitle);
     if(!duplicity && !!newTaskTitle) {
-      const min = 1;
-      const max = 100;
-      const rand = min + Math.random() * (max - min);
-      const newTask = {id: rand, title: newTaskTitle, isComplete: false};
+      const randomicId = Math.random();
+      const newTask = {id: randomicId, title: newTaskTitle, isComplete: false};
       setTasks([...tasks, newTask])
     }
   }
 
   function handleToggleTaskCompletion(id: number) {
-    const taskExists = tasks.find(task => task.id === id);
-    if(!!taskExists){
-      const tasksModified = Object.assign(taskExists,  { isComplete: !taskExists.isComplete });
-      const newTasks = tasks.map(task => {
-        if(task.id === id){
-          return Object.assign(task, tasksModified)
-        }
-        return task;
-      })
-      console.log(newTasks);
-      setTasks(newTasks);
-    }
+    const newTasks = tasks.map(task => task.id === id ? {
+      ...task,
+      isComplete: !task.isComplete
+    } : task)
+    setTasks(newTasks);
   }
 
   function handleRemoveTask(id: number) {
